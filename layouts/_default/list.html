@@ -1,0 +1,66 @@
+{{- define "main" }}
+<header class="page-header">
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <p class="page-description">{{ . }}</p>
+  {{- end }}
+  {{ partial "breadcrumbs.html" . }}
+</header>
+
+{{- /* Post card grid */}}
+{{- if or (eq .Section "posts") (eq .Section "notes") }}
+<div class="post-cards">
+  {{- range .Pages }}
+  <article class="post-card">
+    {{- $cover := .Params.cover.image | default "" }}
+    {{- with $cover }}
+    <a href="{{ $.RelPermalink }}" class="post-card-cover" aria-hidden="true">
+      <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+    </a>
+    {{- end }}
+
+    <div class="post-card-body">
+      <div class="post-card-meta">
+        {{- if .Params.tags }}
+        <span class="post-card-tag">{{ index .Params.tags 0 }}</span>
+        {{- end }}
+        <time class="post-card-date" datetime="{{ .Date.Format "2006-01-02" }}">
+          {{ .Date.Format "2006-01-02" }}
+        </time>
+      </div>
+
+      <h3 class="post-card-title">
+        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      </h3>
+
+      {{- with .Description }}
+      <p class="post-card-desc">{{ . | truncate 100 }}</p>
+      {{- else }}
+      <p class="post-card-desc">{{ .Summary | plainify | truncate 100 }}</p>
+      {{- end }}
+
+      <div class="post-card-footer">
+        <a href="{{ .RelPermalink }}" class="post-card-read">阅读 →</a>
+        {{- if .Params.ShowReadingTime }}
+        <span class="post-card-time">{{ .ReadingTime }} 分钟</span>
+        {{- end }}
+      </div>
+    </div>
+  </article>
+  {{- end }}
+</div>
+{{- else }}
+{{- /* Default list layout for other sections */}}
+  {{- range .Pages.GroupByDate "2006" }}
+  <h2>{{ .Key }}</h2>
+  <ul>
+    {{- range .Pages }}
+    <li>
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      <time>({{ .Date.Format "2006-01-02" }})</time>
+    </li>
+    {{- end }}
+  </ul>
+  {{- end }}
+{{- end }}
+{{- end }}{{/* end main */}}

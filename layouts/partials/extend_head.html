@@ -1,0 +1,21 @@
+{{/*
+  Custom Head Partial
+  Loads Google Fonts for better CJK typography
+*/}}
+{{ if or .IsHome .Page }}
+{{ $fontCSS := "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="{{ $fontCSS }}">
+<style>
+  body {
+    font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .post-content {
+    font-family: "Noto Serif SC", "Noto Sans SC", Georgia, "Times New Roman", serif;
+  }
+  code, pre, .post-content code {
+    font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
+  }
+</style>
+{{ end }}

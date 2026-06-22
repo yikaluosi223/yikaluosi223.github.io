@@ -26,6 +26,7 @@ ignoreFiles = ["\\.obsidian/workspace", "\\.trash"]
   description = "个人博客与知识库 - 记录学习、思考与成长"
   author = "程宇航"
   defaultTheme = "auto"
+  mainSections = ["posts", "notes"]
   ShowShareButtons = false
   ShowReadingTime = true
   ShowWordCount = true
@@ -34,6 +35,12 @@ ignoreFiles = ["\\.obsidian/workspace", "\\.trash"]
   ShowToc = true
   TocOpen = false
   ShowPostNavLinks = true
+
+  [params.profile]
+    avatar = "/images/avatar.svg"
+
+  [params.profile.tags]
+    tags = ["技术写作", "知识管理", "终身学习"]
 
   [params.homeInfoParams]
     Title = "你好 👋"
@@ -83,3 +90,14 @@ ignoreFiles = ["\\.obsidian/workspace", "\\.trash"]
   name = "关于"
   url = "/about/"
   weight = 6
+
+# 社交链接 (可自行添加/修改/删除)
+[[params.social]]
+  name = "GitHub"
+  icon = "🐙"
+  url = "https://github.com/yikaluosi223"
+
+[[params.social]]
+  name = "Email"
+  icon = "📧"
+  url = "mailto:your@email.com"

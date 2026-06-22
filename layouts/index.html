@@ -1,0 +1,121 @@
+{{- define "main" }}
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- $recentPosts := first 6 (where $pages "Params.hidden" "ne" true) }}
+
+{{- /* ===== HERO PROFILE SECTION ===== */}}
+<section class="hero-profile">
+  <div class="hero-inner">
+    {{- with site.Params.profile.avatar }}
+    <div class="hero-avatar">
+      <img src="{{ . | relURL }}" alt="头像" width="120" height="120">
+    </div>
+    {{- end }}
+
+    <h1 class="hero-title">
+      {{- site.Params.homeInfoParams.Title | default site.Title }}
+    </h1>
+
+    <p class="hero-bio">
+      {{- site.Params.homeInfoParams.Content | default site.Params.description }}
+    </p>
+
+    {{- with site.Params.profile.tags }}
+    <div class="hero-tags">
+      {{- range . }}
+      <span class="hero-tag">{{ . }}</span>
+      {{- end }}
+    </div>
+    {{- end }}
+
+    {{- /* Social links */ -}}
+    {{- with site.Params.social }}
+    <div class="hero-social">
+      {{- range . }}
+      <a href="{{ .url }}" target="_blank" rel="noopener noreferrer" title="{{ .name }}" class="social-link">
+        <span class="social-icon">{{ .icon | safeHTML }}</span>
+        <span class="social-name">{{ .name }}</span>
+      </a>
+      {{- end }}
+    </div>
+    {{- end }}
+  </div>
+</section>
+
+{{- /* ===== RECENT POSTS SECTION ===== */}}
+{{- with $recentPosts }}
+<section class="home-posts">
+  <div class="section-header">
+    <h2 class="section-title">📝 最近文章</h2>
+    <a href="{{ "posts/" | relURL }}" class="section-more">查看全部 →</a>
+  </div>
+
+  <div class="post-cards">
+    {{- range . }}
+    <article class="post-card">
+      {{- $cover := .Params.cover.image | default "" }}
+      {{- with $cover }}
+      <a href="{{ $.RelPermalink }}" class="post-card-cover" aria-hidden="true">
+        <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+      </a>
+      {{- end }}
+
+      <div class="post-card-body">
+        <div class="post-card-meta">
+          {{- if .Params.tags }}
+          <span class="post-card-tag">{{ index .Params.tags 0 }}</span>
+          {{- end }}
+          <time class="post-card-date" datetime="{{ .Date.Format "2006-01-02" }}">
+            {{ .Date.Format "2006-01-02" }}
+          </time>
+        </div>
+
+        <h3 class="post-card-title">
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </h3>
+
+        {{- with .Description }}
+        <p class="post-card-desc">{{ . | truncate 100 }}</p>
+        {{- else }}
+        <p class="post-card-desc">{{ .Summary | plainify | truncate 100 }}</p>
+        {{- end }}
+
+        <div class="post-card-footer">
+          <a href="{{ .RelPermalink }}" class="post-card-read">阅读 →</a>
+          {{- if .Params.ShowReadingTime }}
+          <span class="post-card-time">{{ .ReadingTime }} 分钟</span>
+          {{- end }}
+        </div>
+      </div>
+    </article>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+
+{{- /* ===== QUICK NAV SECTION ===== */}}
+<section class="home-nav">
+  <div class="nav-cards">
+    <a href="{{ "notes/" | relURL }}" class="nav-card">
+      <span class="nav-card-icon">🌿</span>
+      <h3>知识笔记</h3>
+      <p>Zettelkasten 笔记系统</p>
+    </a>
+    <a href="{{ "projects/" | relURL }}" class="nav-card">
+      <span class="nav-card-icon">🚀</span>
+      <h3>项目展示</h3>
+      <p>成果与项目记录</p>
+    </a>
+    <a href="{{ "tags/" | relURL }}" class="nav-card">
+      <span class="nav-card-icon">🏷️</span>
+      <h3>标签索引</h3>
+      <p>按标签浏览内容</p>
+    </a>
+    <a href="{{ "search/" | relURL }}" class="nav-card">
+      <span class="nav-card-icon">🔍</span>
+      <h3>搜索</h3>
+      <p>全文搜索内容</p>
+    </a>
+  </div>
+</section>
+
+{{- end }}{{/* end main */}}

@@ -6,7 +6,10 @@
   "alwaysUpdateLinks": true,
   "showFrontmatter": true,
   "spellcheck": true,
-  "spellcheckLanguages": ["zh-CN", "en-US"],
+  "spellcheckLanguages": [
+    "zh-CN",
+    "en-US"
+  ],
   "newFileLocation": "folder",
   "newFileFolderPath": "notes/permanent",
   "showUnsupportedFiles": true,
