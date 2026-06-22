@@ -1,0 +1,74 @@
+{{- define "main" }}
+{{- $page := . }}
+<article class="post-single note-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title entry-hint-parent">
+      {{ .Title }}
+      {{- if .Draft }}
+      <span class="entry-hint" title="草稿">
+        <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 0 24 24" width="15">
+          <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      </span>
+      {{- end }}
+    </h1>
+
+    {{- /* Stage indicator for notes */ -}}
+    {{- with .Params.stage }}
+    <div class="note-stage stage--{{ . }}">
+      <span class="stage-label">
+        {{- if eq . "seedling" }}🌱 种子
+        {{- else if eq . "budding" }}🌿 萌芽
+        {{- else if eq . "evergreen" }}🌲 常青
+        {{- else }}{{ . | humanize }}
+        {{- end -}}
+      </span>
+    </div>
+    {{- end }}
+
+    {{- if .Description }}
+    <div class="post-description">
+      {{ .Description }}
+    </div>
+    {{- end }}
+
+    {{- /* Show aliases if any */ -}}
+    {{- with .Params.aliases }}
+    <div class="note-aliases">
+      <span class="aliases-label">别名：</span>
+      {{- range . }}
+      <span class="alias-tag">{{ . }}</span>
+      {{- end }}
+    </div>
+    {{- end }}
+  </header>
+
+  {{- if (.Param "ShowToc") }}
+  {{- partial "toc.html" . }}
+  {{- end }}
+
+  {{- if .Content }}
+  <div class="post-content">
+    {{- /* Process wikilinks before rendering */ -}}
+    {{- $processed := partial "wikilink-processor.html" .RawContent }}
+    {{- $processed | $page.RenderString }}
+  </div>
+  {{- end }}
+
+  {{- /* Backlinks section - more prominent for notes */ -}}
+  {{- partial "backlinks.html" . }}
+
+  <footer class="post-footer">
+    {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
+    <ul class="post-tags">
+      {{- range ($.GetTerms "tags") }}
+      <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
+      {{- end }}
+    </ul>
+    {{- if (.Param "ShowPostNavLinks") }}
+    {{- partial "post_nav_links.html" . }}
+    {{- end }}
+  </footer>
+</article>
+{{- end }}{{/* end main */}}

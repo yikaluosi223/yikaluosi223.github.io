@@ -1,0 +1,23 @@
+{{/*
+  Wikilink Dictionary
+  Builds a lookup dictionary mapping page paths/titles to .Page objects.
+  Cached once per build via partialCached.
+*/}}
+
+{{- $allPages := .Site.RegularPages -}}
+{{- $sections := .Site.Sections -}}
+
+{{- /* Combine regular pages and section pages */ -}}
+{{- $allEntries := slice -}}
+{{- range $allPages -}}
+  {{- $allEntries = $allEntries | append . -}}
+{{- end -}}
+{{- range $sections -}}
+  {{- $allEntries = $allEntries | append . -}}
+  {{- /* Also add pages within sections */ -}}
+  {{- range .Pages -}}
+    {{- $allEntries = $allEntries | append . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $allEntries -}}

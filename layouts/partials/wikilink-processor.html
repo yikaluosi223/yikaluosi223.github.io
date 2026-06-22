@@ -1,0 +1,159 @@
+{{/*
+  Wikilink Preprocessor for Hugo
+  Transforms Obsidian wikilinks into Hugo-compatible markdown links.
+
+  Obsidian syntax:
+    [[Page Name]]             -> Link to another page
+    [[Page Name|Display Text]] -> Link with custom display text
+    [[Page Name#heading]]      -> Link to a heading within a page
+    ![[image.png]]             -> Embed an image
+    ![[image.png|Alt text]]    -> Embed an image with alt text
+    ![[image.png|Alt|Title]]   -> Embed an image with alt and title
+
+  External URL wikilinks:
+    [[https://example.com]]          -> External link
+    [[https://example.com|Link Text]] -> External link with text
+*/}}
+
+{{- $content := . -}}
+
+{{- /* Step 1: Protect code blocks (inline code and fenced code blocks) */ -}}
+{{- $codeBlockPlaceholders := slice -}}
+{{- $replacementMap := dict -}}
+
+{{- /* Helper: generate unique placeholder and store replacement */ -}}
+{{- $placeholderBase := "WIKILINK_PLACEHOLDER_" | string -}}
+
+{{- /* Find fenced code blocks and replace them with placeholders */ -}}
+{{- $fencedPattern := "(?s)```.*?```" -}}
+{{- $fencedMatches := findRE $fencedPattern $content -}}
+{{- $counter := 0 -}}
+{{- range $fencedMatches -}}
+  {{- $placeholder := printf "%s%d" $placeholderBase $counter -}}
+  {{- $content = replace $content . $placeholder -}}
+  {{- $replacementMap = merge $replacementMap (dict $placeholder .) -}}
+  {{- $counter = add $counter 1 -}}
+{{- end -}}
+
+{{- /* Find inline code and replace with placeholders */ -}}
+{{- $inlinePattern := "`[^`]*`" -}}
+{{- $inlineMatches := findRE $inlinePattern $content -}}
+{{- range $inlineMatches -}}
+  {{- $placeholder := printf "%s%d" $placeholderBase $counter -}}
+  {{- $content = replace $content . $placeholder -}}
+  {{- $replacementMap = merge $replacementMap (dict $placeholder .) -}}
+  {{- $counter = add $counter 1 -}}
+{{- end -}}
+
+{{- /* Step 2: Convert image wikilinks first (before regular wikilinks) */ -}}
+{{- /* ![[image.png|Alt text]] -> ![Alt text](imageWikiLink "image.png") */ -}}
+{{- $imageAliasPattern := "!\\[\\[([^\\]|]+)\\|([^\\]|]+)(?:\\|([^\\]]+))?\\]\\]" -}}
+{{- $imageAliasMatches := findRE $imageAliasPattern $content -}}
+{{- range $imageAliasMatches -}}
+  {{- $parts := findRESubmatch $imageAliasPattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $filename := index (index $parts 0) 1 -}}
+    {{- $alt := index (index $parts 0) 2 -}}
+    {{- $replacement := printf "![%s](imageWikiLink \"%s\")" $alt $filename -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* ![[image.png]] -> ![image.png](imageWikiLink "image.png") */ -}}
+{{- $imageSimplePattern := "!\\[\\[([^\\]|]+)\\]\\]" -}}
+{{- $imageSimpleMatches := findRE $imageSimplePattern $content -}}
+{{- range $imageSimpleMatches -}}
+  {{- $parts := findRESubmatch $imageSimplePattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $filename := index (index $parts 0) 1 -}}
+    {{- $replacement := printf "![%s](imageWikiLink \"%s\")" $filename $filename -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Step 3: Convert external URL wikilinks */ -}}
+{{- /* [[https://example.com|Link Text]] -> [Link Text](https://example.com) */ -}}
+{{- $extAliasPattern := "\\[\\[(https?://[^\\]|]+)\\|([^\\]]+)\\]\\]" -}}
+{{- $extAliasMatches := findRE $extAliasPattern $content -}}
+{{- range $extAliasMatches -}}
+  {{- $parts := findRESubmatch $extAliasPattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $url := index (index $parts 0) 1 -}}
+    {{- $text := index (index $parts 0) 2 -}}
+    {{- $replacement := printf "[%s](%s)" $text $url -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* [[https://example.com]] -> [https://example.com](https://example.com) */ -}}
+{{- $extSimplePattern := "\\[\\[(https?://[^\\]]+)\\]\\]" -}}
+{{- $extSimpleMatches := findRE $extSimplePattern $content -}}
+{{- range $extSimpleMatches -}}
+  {{- $parts := findRESubmatch $extSimplePattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $url := index (index $parts 0) 1 -}}
+    {{- $replacement := printf "[%s](%s)" $url $url -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Step 4: Convert regular wikilinks */ -}}
+{{- /* [[Page Name#heading|Display Text]] -> [Display Text](wikilink#heading "Page Name") */ -}}
+{{- $headingAliasPattern := "\\[\\[([^\\]|#]+)#([^\\]|]+)\\|([^\\]]+)\\]\\]" -}}
+{{- $headingAliasMatches := findRE $headingAliasPattern $content -}}
+{{- range $headingAliasMatches -}}
+  {{- $parts := findRESubmatch $headingAliasPattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $page := index (index $parts 0) 1 -}}
+    {{- $heading := index (index $parts 0) 2 -}}
+    {{- $text := index (index $parts 0) 3 -}}
+    {{- $replacement := printf "[%s](wikilink#%s \"%s\")" $text $heading $page -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* [[Page Name|Display Text]] -> [Display Text](wikilink "Page Name") */ -}}
+{{- $aliasPattern := "\\[\\[([^\\]|]+)\\|([^\\]]+)\\]\\]" -}}
+{{- $aliasMatches := findRE $aliasPattern $content -}}
+{{- range $aliasMatches -}}
+  {{- $parts := findRESubmatch $aliasPattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $page := index (index $parts 0) 1 -}}
+    {{- $text := index (index $parts 0) 2 -}}
+    {{- $replacement := printf "[%s](wikilink \"%s\")" $text $page -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* [[Page Name#heading]] -> [Page Name](wikilink#heading "Page Name") */ -}}
+{{- $headingPattern := "\\[\\[([^\\]]+)#([^\\]|]+)\\]\\]" -}}
+{{- $headingMatches := findRE $headingPattern $content -}}
+{{- range $headingMatches -}}
+  {{- $parts := findRESubmatch $headingPattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $page := index (index $parts 0) 1 -}}
+    {{- $heading := index (index $parts 0) 2 -}}
+    {{- $replacement := printf "[%s](wikilink#%s \"%s\")" $page $heading $page -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* [[Page Name]] -> [Page Name](wikilink "Page Name") */ -}}
+{{- $simplePattern := "\\[\\[([^\\]|#]+)\\]\\]" -}}
+{{- $simpleMatches := findRE $simplePattern $content -}}
+{{- range $simpleMatches -}}
+  {{- $parts := findRESubmatch $simplePattern . -}}
+  {{- if ge (len $parts) 1 -}}
+    {{- $page := index (index $parts 0) 1 -}}
+    {{- $replacement := printf "[%s](wikilink \"%s\")" $page $page -}}
+    {{- $content = replace $content . $replacement -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* Step 5: Restore protected code blocks */ -}}
+{{- range $placeholder, $original := $replacementMap -}}
+  {{- $content = replace $content $placeholder $original -}}
+{{- end -}}
+
+{{- /* Return the processed content as a string */ -}}
+{{- return $content -}}

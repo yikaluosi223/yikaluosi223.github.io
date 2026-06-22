@@ -1,0 +1,55 @@
+/* Wikilink Visual Styles */
+
+/* Internal wikilink (resolved) */
+.link--internal {
+  color: var(--link-color, #1a73e8);
+  text-decoration: none;
+  border-bottom: 1px dotted color-mix(in srgb, var(--link-color, #1a73e8) 50%, transparent);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.link--internal:hover {
+  color: var(--link-hover-color, #1557b0);
+  border-bottom-style: solid;
+}
+
+/* Broken wikilink (unresolved) */
+.link--broken {
+  color: #e53935;
+  cursor: help;
+  text-decoration: none;
+  border-bottom: 1px dashed #e53935;
+}
+
+.link--broken:hover {
+  background-color: color-mix(in srgb, #e53935 10%, transparent);
+}
+
+.broken-link-indicator {
+  font-size: 0.75em;
+  color: #e53935;
+  font-weight: bold;
+}
+
+/* External link */
+.link--external {
+  color: var(--link-color, #1a73e8);
+  text-decoration: none;
+}
+
+.link--external::after {
+  content: " ↗";
+  font-size: 0.75em;
+  opacity: 0.6;
+}
+
+.link--external:hover {
+  text-decoration: underline;
+}
+
+/* Image wikilink */
+.img--wikilink {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}

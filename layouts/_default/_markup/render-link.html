@@ -1,0 +1,85 @@
+{{/*
+  Link Render Hook
+  Resolves wikilinks to Hugo internal pages and handles external links.
+
+  Destination types:
+    - "wikilink"      -> Look up the page in the site and render an internal link
+    - "imageWikiLink" -> Render the image (handled by render-image.html)
+    - http(s)://      -> External link with target="_blank"
+    - other           -> Default Goldmark behavior
+*/}}
+
+{{- $destination := .Destination -}}
+{{- $text := .Text -}}
+{{- $title := .Title -}}
+
+{{- if strings.HasPrefix $destination "wikilink" -}}
+  {{- /* Build page lookup dictionary (cached per build) */ -}}
+  {{- $allPages := partialCached "wikilink-dict.html" .Page -}}
+
+  {{- $targetPage := "" -}}
+  {{- $fragment := "" -}}
+
+  {{- /* Extract fragment (#heading) from destination if present */ -}}
+  {{- if strings.Contains $destination "#" -}}
+    {{- $parts := split $destination "#" -}}
+    {{- $destination = index $parts 0 -}}
+    {{- $fragment = index $parts 1 -}}
+  {{- end -}}
+
+  {{- /* Normalize the page name from title attribute */ -}}
+  {{- $searchName := lower $title -}}
+  {{- $searchName = strings.TrimSpace $searchName -}}
+
+  {{- /* Try to find matching page by path or title */ -}}
+  {{- range $allPages -}}
+    {{- $pagePath := lower .File.Path -}}
+    {{- $pageDir := lower .File.Dir -}}
+    {{- $pageBase := lower .File.ContentBaseName -}}
+    {{- $pageTitle := lower .Title -}}
+
+    {{- /* Match by file path (with or without extension, with or without dir) */ -}}
+    {{- if or
+      (eq $pagePath $searchName)
+      (eq $pagePath (printf "%s.md" $searchName))
+      (eq $pagePath (printf "%s/index.md" $searchName))
+      (eq $pageBase $searchName)
+      (strings.HasSuffix $pagePath (printf "/%s/index.md" $searchName))
+      (strings.HasSuffix $pagePath (printf "/%s.md" $searchName))
+      (eq (strings.Replace $pagePath " " "-") $searchName)
+      (eq (strings.Replace $pagePath " " "-") (printf "%s.md" $searchName))
+      (eq $pageTitle $searchName)
+    -}}
+      {{- $targetPage = . -}}
+      {{- break -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if $targetPage -}}
+    {{- $href := $targetPage.RelPermalink -}}
+    {{- if $fragment -}}
+      {{- $href = printf "%s#%s" $href $fragment -}}
+    {{- end -}}
+    <a href="{{ $href | safeURL }}" class="link link--internal">{{ .Text | safeHTML }}</a>
+  {{- else -}}
+    {{- /* Unresolved wikilink - show with broken link indicator */ -}}
+    <span class="link link--broken" title="未找到页面: {{ $title }}">
+      {{ .Text | safeHTML }}
+      <sup class="broken-link-indicator">?</sup>
+    </span>
+  {{- end -}}
+
+{{- else if strings.HasPrefix $destination "imageWikiLink" -}}
+  {{- /* Image wikilink - handled by the render-image hook, pass through */ -}}
+  <span class="image-wikilink">{{ .Text | safeHTML }}</span>
+
+{{- else if or (strings.HasPrefix $destination "http://") (strings.HasPrefix $destination "https://") -}}
+  {{- /* External link */ -}}
+  <a href="{{ $destination | safeURL }}" target="_blank" rel="noopener noreferrer" class="link link--external">
+    {{ .Text | safeHTML }}
+  </a>
+
+{{- else -}}
+  {{- /* Default: regular markdown link */ -}}
+  <a href="{{ $destination | safeURL }}" class="link">{{ .Text | safeHTML }}</a>
+{{- end -}}

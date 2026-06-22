@@ -1,0 +1,56 @@
+{{/*
+  Backlinks Partial
+  Finds other pages that link to the current page via wikilinks.
+  Scans all pages' RawContent for [[current-page]] references.
+*/}}
+
+{{- $currentPage := . -}}
+{{- $backlinks := slice -}}
+{{- $currentBasename := .File.ContentBaseName -}}
+{{- $currentRelPermalink := strings.TrimSuffix "/" .RelPermalink -}}
+
+{{- range where .Site.RegularPages "RelPermalink" "ne" .RelPermalink -}}
+  {{- $content := .RawContent -}}
+  {{- $matched := false -}}
+
+  {{- /* Check for various wikilink patterns referencing this page */ -}}
+  {{- if $content -}}
+    {{- if or
+      (strings.Contains $content (printf "[[%s]]" $currentBasename))
+      (strings.Contains $content (printf "[[%s|" $currentBasename))
+      (strings.Contains $content (printf "[[%s#" $currentBasename))
+    -}}
+      {{- $matched = true -}}
+    {{- end -}}
+
+    {{- /* Also check by title */ -}}
+    {{- if not $matched -}}
+      {{- if strings.Contains $content (printf "[[%s]]" $currentPage.Title) -}}
+        {{- $matched = true -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if $matched -}}
+    {{- $backlinks = $backlinks | append . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- with $backlinks }}
+<aside class="backlinks">
+  <h3 class="backlinks-title">🔗 链接到此页面的笔记</h3>
+  <ul class="backlinks-list">
+    {{- range . }}
+    <li class="backlink-item">
+      <a href="{{ .RelPermalink }}" class="backlink-link">{{ .Title }}</a>
+      {{- with .Description }}
+      <span class="backlink-desc">{{ . }}</span>
+      {{- end }}
+      {{- with .Params.stage }}
+      <span class="backlink-stage stage--{{ . }}">{{ . }}</span>
+      {{- end }}
+    </li>
+    {{- end }}
+  </ul>
+</aside>
+{{- end }}

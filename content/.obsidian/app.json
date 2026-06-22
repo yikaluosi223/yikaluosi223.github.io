@@ -1,0 +1,20 @@
+{
+  "useMarkdownLinks": false,
+  "useWikilinks": true,
+  "newLinkFormat": "shortest",
+  "attachmentFolderPath": "attachments",
+  "alwaysUpdateLinks": true,
+  "showFrontmatter": true,
+  "spellcheck": true,
+  "spellcheckLanguages": ["zh-CN", "en-US"],
+  "newFileLocation": "folder",
+  "newFileFolderPath": "notes/permanent",
+  "showUnsupportedFiles": true,
+  "showLineNumber": false,
+  "readableLineLength": true,
+  "strictLineBreaks": false,
+  "defaultViewMode": "source",
+  "livePreview": true,
+  "focusNewTab": true,
+  "trashOption": "local"
+}

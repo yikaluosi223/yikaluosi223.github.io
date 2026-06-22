@@ -1,0 +1,22 @@
+# Hugo build output
+public/
+resources/
+
+# Hugo lock file
+.hugo_build.lock
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Obsidian workspace state (private)
+content/.obsidian/workspace*.json
+content/.obsidian/workspace.json
+
+# Obsidian cache
+content/.obsidian/.obsidian-cache/
+content/.trash/
+
+# IDE
+.vscode/
+.idea/

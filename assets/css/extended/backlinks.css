@@ -1,0 +1,111 @@
+/* Backlinks Section */
+.backlinks {
+  margin-top: 3rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  background-color: var(--card-bg, color-mix(in srgb, var(--theme) 5%, transparent));
+  border: 1px solid var(--border);
+}
+
+.backlinks-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--primary);
+}
+
+.backlinks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.backlink-item {
+  padding: 0.5rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.backlink-item:last-child {
+  border-bottom: none;
+}
+
+.backlink-link {
+  font-weight: 500;
+  color: var(--link-color, #1a73e8);
+  text-decoration: none;
+}
+
+.backlink-link:hover {
+  text-decoration: underline;
+}
+
+.backlink-desc {
+  color: var(--secondary);
+  font-size: 0.85em;
+}
+
+.backlink-stage {
+  font-size: 0.75em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background-color: var(--code-bg);
+  color: var(--secondary);
+}
+
+/* Stage indicators in notes */
+.note-stage {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.85em;
+}
+
+.stage-label {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.stage--seedling .stage-label {
+  background-color: color-mix(in srgb, #66bb6a 20%, transparent);
+  color: #2e7d32;
+}
+
+.stage--budding .stage-label {
+  background-color: color-mix(in srgb, #ffa726 20%, transparent);
+  color: #e65100;
+}
+
+.stage--evergreen .stage-label {
+  background-color: color-mix(in srgb, #42a5f5 20%, transparent);
+  color: #0d47a1;
+}
+
+/* Note aliases */
+.note-aliases {
+  margin-top: 0.5rem;
+  font-size: 0.85em;
+  color: var(--secondary);
+}
+
+.aliases-label {
+  font-weight: 500;
+}
+
+.alias-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  margin: 2px 2px;
+  border-radius: 4px;
+  background-color: var(--code-bg);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9em;
+}
+
+/* Dark mode backlinks */
+[data-theme="dark"] .backlinks {
+  background-color: color-mix(in srgb, var(--theme) 10%, transparent);
+}

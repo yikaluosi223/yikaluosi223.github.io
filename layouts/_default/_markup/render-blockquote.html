@@ -1,0 +1,49 @@
+{{/*
+  Blockquote Render Hook
+  Renders Obsidian/GitHub-style callout alerts natively (Hugo >= v0.130.0).
+
+  Obsidian syntax:
+    > [!note] Title
+    > Content goes here
+
+  Native alert types: note, tip, important, warning, caution
+*/}}
+
+{{- if eq .Type "alert" -}}
+  {{- /* Map alert types to CSS classes */ -}}
+  {{- $cssClass := .AlertType -}}
+  {{- $iconMap := dict
+    "note" "📝"
+    "abstract" "📄"
+    "info" "ℹ️"
+    "tip" "💡"
+    "success" "✅"
+    "question" "❓"
+    "warning" "⚠️"
+    "caution" "🔥"
+    "failure" "❌"
+    "danger" "⚡"
+    "bug" "🐛"
+    "example" "📋"
+    "quote" "💬"
+    "important" "❗"
+  -}}
+  {{- $icon := index $iconMap $cssClass | default "📝" -}}
+  {{- $title := .AlertTitle | default (.AlertType | humanize) -}}
+
+  <blockquote class="callout callout--{{ $cssClass }}" data-callout="{{ .AlertType }}">
+    <div class="callout-title">
+      <span class="callout-icon">{{ $icon }}</span>
+      <strong>{{ $title }}</strong>
+    </div>
+    <div class="callout-content">
+      {{ .Text }}
+    </div>
+  </blockquote>
+
+{{- else -}}
+  {{- /* Regular blockquote */ -}}
+  <blockquote>
+    {{ .Text }}
+  </blockquote>
+{{- end -}}

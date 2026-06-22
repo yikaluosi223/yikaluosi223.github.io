@@ -1,0 +1,39 @@
+{{/*
+  Image Render Hook
+  Handles wikilink images and regular images.
+
+  Wikilink images have destination "imageWikiLink" with the actual
+  filename stored in the title attribute.
+*/}}
+
+{{- $destination := .Destination -}}
+{{- $text := .Text -}}
+{{- $title := .Title -}}
+
+{{- if strings.HasPrefix $destination "imageWikiLink" -}}
+  {{- /* Image wikilink: find the actual image file */ -}}
+  {{- $filename := $title -}}
+
+  {{- /* Search for the image in the page bundle and attachments */ -}}
+  {{- $imgPath := "" -}}
+  {{- $pageResource := .Page.Resources.GetMatch $filename -}}
+  {{- if $pageResource -}}
+    {{- $imgPath = $pageResource.RelPermalink -}}
+  {{- else -}}
+    {{- /* Try common attachment paths */ -}}
+    {{- $globalResource := resources.GetMatch (printf "**/%s" $filename) -}}
+    {{- if $globalResource -}}
+      {{- $imgPath = $globalResource.RelPermalink -}}
+    {{- else -}}
+      {{- /* Fallback: assume it's in the attachments folder */ -}}
+      {{- $imgPath = printf "/attachments/%s" $filename -}}
+    {{- end -}}
+  {{- end -}}
+
+  <img src="{{ $imgPath | safeURL }}" alt="{{ $text }}" loading="lazy" class="img--wikilink">
+
+{{- else -}}
+  {{- /* Regular image */ -}}
+  <img src="{{ $destination | safeURL }}" alt="{{ $text }}" loading="lazy"
+    {{- with $title }} title="{{ . }}"{{ end -}}>
+{{- end -}}

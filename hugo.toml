@@ -1,0 +1,85 @@
+baseURL = "https://<username>.github.io/"
+locale = "zh-cn"
+defaultContentLanguage = "zh-cn"
+title = "数字花园"
+theme = "PaperMod"
+hasCJKLanguage = true
+enableRobotsTXT = true
+enableEmoji = true
+
+# Ignore Obsidian internal directories during build
+ignoreFiles = ["\\.obsidian/workspace", "\\.trash"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+    [markup.goldmark.parser]
+      [markup.goldmark.parser.attribute]
+        block = true
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[params]
+  env = "production"
+  description = "个人博客与知识库 - 记录学习、思考与成长"
+  author = "程宇航"
+  defaultTheme = "auto"
+  ShowShareButtons = false
+  ShowReadingTime = true
+  ShowWordCount = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowToc = true
+  TocOpen = false
+  ShowPostNavLinks = true
+
+  [params.homeInfoParams]
+    Title = "你好 👋"
+    Content = "欢迎来到我的数字花园。在这里记录技术学习、项目成果与知识沉淀。"
+
+  [params.fuseOpts]
+    isCaseSensitive = false
+    shouldSort = true
+    location = 0
+    distance = 100
+    threshold = 0.4
+    minMatchCharLength = 1
+    keys = ["title", "permalink", "summary", "content"]
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  stage = "stages"
+
+# 主菜单
+[[menu.main]]
+  name = "博客"
+  url = "/posts/"
+  weight = 1
+
+[[menu.main]]
+  name = "笔记"
+  url = "/notes/"
+  weight = 2
+
+[[menu.main]]
+  name = "项目"
+  url = "/projects/"
+  weight = 3
+
+[[menu.main]]
+  name = "标签"
+  url = "/tags/"
+  weight = 4
+
+[[menu.main]]
+  name = "搜索"
+  url = "/search/"
+  weight = 5
+
+[[menu.main]]
+  name = "关于"
+  url = "/about/"
+  weight = 6

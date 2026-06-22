@@ -1,0 +1,85 @@
+/* Chinese Typography Enhancements */
+
+/* CJK font stack */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+               "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+  font-optical-sizing: auto;
+}
+
+/* Better CJK line height */
+.post-content {
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+}
+
+/* Proper text alignment for Chinese */
+.post-content p {
+  text-align: justify;
+  text-justify: inter-character;
+  word-break: break-word;
+}
+
+/* Heading weights for Chinese readability */
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.post-content h1 { font-size: 1.8em; }
+.post-content h2 { font-size: 1.5em; margin-top: 2rem; }
+.post-content h3 { font-size: 1.25em; margin-top: 1.5rem; }
+
+/* Emphasis: Use emphasis marks for CJK text */
+.post-content em {
+  font-style: normal;
+  text-emphasis: filled circle;
+  -webkit-text-emphasis: filled circle;
+  text-emphasis-color: var(--primary);
+  -webkit-text-emphasis-color: var(--primary);
+}
+
+/* Inline code sizing for CJK */
+.post-content code {
+  font-size: 0.9em;
+  padding: 0.15em 0.3em;
+  border-radius: 3px;
+}
+
+/* Blockquote styling */
+.post-content blockquote {
+  border-left: 3px solid var(--primary);
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: var(--secondary);
+  background-color: color-mix(in srgb, var(--theme) 3%, transparent);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Table styling */
+.post-content table {
+  font-size: 0.9em;
+}
+
+/* List spacing */
+.post-content ul,
+.post-content ol {
+  padding-inline-start: 1.5em;
+}
+
+.post-content li {
+  margin-bottom: 0.25em;
+}
+
+/* Horizontal rule */
+.post-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}

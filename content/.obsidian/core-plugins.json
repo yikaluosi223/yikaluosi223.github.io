@@ -1,0 +1,18 @@
+{
+  "backlink": true,
+  "outgoing-link": true,
+  "graph-view": true,
+  "tag-pane": true,
+  "page-preview": true,
+  "file-explorer": true,
+  "search": true,
+  "quick-switcher": true,
+  "command-palette": true,
+  "markdown-importer": false,
+  "templates": false,
+  "outline": true,
+  "word-count": true,
+  "workspaces": false,
+  "properties": false,
+  "publish": false
+}
