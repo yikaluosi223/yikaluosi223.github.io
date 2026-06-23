@@ -7,6 +7,15 @@ hasCJKLanguage = true
 enableRobotsTXT = true
 enableEmoji = true
 
+# 让 content/attachments/ 中的文件可以在网页直接访问
+[module]
+  [[module.mounts]]
+    source = "static"
+    target = "static"
+  [[module.mounts]]
+    source = "content/attachments"
+    target = "static/attachments"
+
 # Ignore Obsidian internal directories during build
 ignoreFiles = ["\\.obsidian/workspace", "\\.trash"]
 

@@ -1,10 +1,13 @@
 ---
-title: "学习笔记示例"
+title: 学习笔记示例
 date: 2026-06-23T12:00:00+08:00
 draft: false
-tags: ["学习", "示例"]
-categories: ["学习"]
-description: "一个学习笔记的示例"
+tags:
+  - 学习
+  - 示例
+categories:
+  - 学习
+description: 一个学习笔记的示例
 ---
 
 这是一个学习笔记示例。你可以在这里记录学习过程中的心得和想法。
