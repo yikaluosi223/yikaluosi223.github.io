@@ -1,6 +1,6 @@
 ---
 title: "Python编程：从入门到实践 第3版"
-date: 2026-06-23T12:00:00+08:00
+date: 2026-06-23T23:01:00+08:00
 draft: false
 tags: ["Python", "编程", "书籍"]
 categories: ["学习"]
