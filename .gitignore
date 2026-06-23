@@ -1,6 +1,6 @@
 # Hugo build output
 public/
-resources/
+/resources/
 
 # Hugo lock file
 .hugo_build.lock
