@@ -49,19 +49,6 @@ jobs:
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
 
-      - name: Encrypt private pages
-        run: |
-          npm install -g staticrypt@3
-          PRIVATE_PASSWORD="${{ vars.PRIVATE_PASSWORD }}"
-          if [ -z "$PRIVATE_PASSWORD" ]; then
-            PRIVATE_PASSWORD="123456"
-          fi
-          # Encrypt each private page
-          for file in $(find public/learning/private -name "index.html" 2>/dev/null); do
-            echo "Encrypting $file"
-            staticrypt "$file" -p "$PRIVATE_PASSWORD" -o "$file" --short
-          done
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

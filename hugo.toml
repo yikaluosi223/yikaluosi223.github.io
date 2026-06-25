@@ -36,6 +36,7 @@ ignoreFiles = ["\\.obsidian/workspace", "\\.trash"]
   author = "程宇航"
   defaultTheme = "auto"
   mainSections = ["posts", "notes"]
+  privatePassword = "123456"
   ShowShareButtons = false
   ShowReadingTime = true
   ShowWordCount = true
