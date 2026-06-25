@@ -1,0 +1,127 @@
+{{- define "main" }}
+{{- $pages := .Pages }}
+
+<header class="page-header">
+  <h1>{{ .Title }}</h1>
+  {{- with .Description }}
+  <p class="page-description">{{ . }}</p>
+  {{- end }}
+  {{ partial "breadcrumbs.html" . }}
+</header>
+
+{{- /* ===== LEARNING HOMEPAGE: Show category cards ===== */}}
+{{- if eq .Kind "section" }}
+  {{- $subSections := where .Sections "Params.build.list" "ne" "never" }}
+  {{- if gt (len $subSections) 0 }}
+    {{- range $subSections }}
+    {{- $catPages := first 8 .Pages }}
+    {{- $totalCount := len .Pages }}
+    {{- if gt (len $catPages) 0 }}
+    <section class="learning-category">
+      <div class="section-header">
+        <h2 class="section-title">{{ .Title }}</h2>
+        {{- if gt $totalCount 8 }}
+        <a href="{{ .RelPermalink }}" class="section-more">查看全部（{{ $totalCount }}）→</a>
+        {{- end }}
+      </div>
+
+      <div class="post-cards">
+        {{- range $catPages }}
+        <article class="post-card">
+          {{- $cover := .Params.cover.image | default "" }}
+          {{- with $cover }}
+          <a href="{{ $.RelPermalink }}" class="post-card-cover" aria-hidden="true">
+            <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+          </a>
+          {{- end }}
+
+          <div class="post-card-body">
+            <div class="post-card-meta">
+              {{- if .Params.tags }}
+              <span class="post-card-tag">{{ index .Params.tags 0 }}</span>
+              {{- end }}
+              <time class="post-card-date">{{ .Date.Format "2006-01-02" }}</time>
+            </div>
+
+            <h3 class="post-card-title">
+              <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            </h3>
+
+            {{- with .Description }}
+            <p class="post-card-desc">{{ . }}</p>
+            {{- end }}
+
+            <div class="post-card-footer">
+              <a href="{{ .RelPermalink }}" class="post-card-read">阅读 →</a>
+            </div>
+          </div>
+        </article>
+        {{- end }}
+      </div>
+    </section>
+    {{- end }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Also show non-section pages (notes, courses etc) */}}
+  {{- $regularPages := where .Pages "Kind" "eq" "page" }}
+  {{- if gt (len $regularPages) 0 }}
+  <section class="learning-category">
+    <h2 class="section-title">📝 其他资料</h2>
+    <div class="post-cards">
+      {{- range $regularPages }}
+      <article class="post-card">
+        <div class="post-card-body">
+          <h3 class="post-card-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          {{- with .Description }}
+          <p class="post-card-desc">{{ . }}</p>
+          {{- end }}
+          <div class="post-card-footer">
+            <a href="{{ .RelPermalink }}" class="post-card-read">阅读 →</a>
+          </div>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+{{- else }}
+
+  {{- /* ===== CATEGORY PAGE: Show all books ===== */}}
+  <div class="post-cards">
+    {{- range $pages }}
+    <article class="post-card">
+      {{- $cover := .Params.cover.image | default "" }}
+      {{- with $cover }}
+      <a href="{{ $.RelPermalink }}" class="post-card-cover" aria-hidden="true">
+        <img src="{{ . | relURL }}" alt="{{ $.Title }}" loading="lazy">
+      </a>
+      {{- end }}
+
+      <div class="post-card-body">
+        <div class="post-card-meta">
+          {{- if .Params.tags }}
+          <span class="post-card-tag">{{ index .Params.tags 0 }}</span>
+          {{- end }}
+          <time class="post-card-date">{{ .Date.Format "2006-01-02" }}</time>
+        </div>
+
+        <h3 class="post-card-title">
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </h3>
+
+        {{- with .Description }}
+        <p class="post-card-desc">{{ . }}</p>
+        {{- end }}
+
+        <div class="post-card-footer">
+          <a href="{{ .RelPermalink }}" class="post-card-read">阅读 →</a>
+        </div>
+      </div>
+    </article>
+    {{- end }}
+  </div>
+{{- end }}
+
+{{- end }}{{/* end main */}}
